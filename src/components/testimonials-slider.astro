@@ -89,8 +89,11 @@ const testimonials = (await getCollection("clients")).sort((a, b) => {
 			let rafId = 0;
 			let lastTs = 0;
 			let paused = false;
+			/** Bloquea el auto-scroll RAF mientras corre scrollBy(smooth) en las flechas */
+			let arrowSmoothUntil = 0;
 
 			const track = slider;
+			const ARROW_SMOOTH_MS = 520;
 
 			const cancelRaf = () => {
 				cancelAnimationFrame(rafId);
@@ -116,7 +119,12 @@ const testimonials = (await getCollection("clients")).sort((a, b) => {
 				if (lw > 16 && track.scrollLeft <= 8) {
 					track.scrollLeft += lw;
 				}
-				track.scrollLeft = Math.max(0, track.scrollLeft - step);
+				const behavior = reduceMotion ? "auto" : "smooth";
+				if (behavior === "smooth") {
+					arrowSmoothUntil = performance.now() + ARROW_SMOOTH_MS;
+					lastTs = 0;
+				}
+				track.scrollBy({ left: -step, behavior });
 			};
 
 			const scrollNext = () => {
@@ -127,13 +135,20 @@ const testimonials = (await getCollection("clients")).sort((a, b) => {
 				if (lw > 16 && track.scrollLeft >= max - tol) {
 					track.scrollLeft -= lw;
 				}
-				track.scrollLeft += step;
+				const behavior = reduceMotion ? "auto" : "smooth";
+				if (behavior === "smooth") {
+					arrowSmoothUntil = performance.now() + ARROW_SMOOTH_MS;
+					lastTs = 0;
+				}
+				track.scrollBy({ left: step, behavior });
 			};
 
 			function tick(ts: number) {
 				const lw = loopWidth();
+				const arrowSmoothActive = performance.now() < arrowSmoothUntil;
 				if (
 					!reduceMotion &&
+					!arrowSmoothActive &&
 					lw > 40 &&
 					!paused &&
 					track.scrollWidth > track.clientWidth + 8

@@ -4,8 +4,8 @@ import Layout from "../layouts/Layout.astro";
 import Nosotros from "../components/nosotros.astro";
 import Servicios from "../components/servicios.astro";
 import Clientes from "../components/clientes.astro";
-
-
+import Contacto from "../components/contacto.astro";
+import CTA from "../components/cta.astro";
 
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
@@ -15,8 +15,10 @@ import Clientes from "../components/clientes.astro";
 <Layout>
 	<div class="flex flex-col gap-0">
 		<Home />
-		<Nosotros />
 		<Servicios />
+		<Contacto />
+		<Nosotros />
 		<Clientes />
+		<CTA />
 	</div>
 </Layout>
