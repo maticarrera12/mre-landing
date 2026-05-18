@@ -64,6 +64,7 @@ html {
 
 :root {
 	--surface-deep: #0d0d0d;
+	--surface-warm: #3b3735;
 	--accent-elegant: #cf8f6e;
 	--accent-elegant-mid: rgb(207 143 110 / 0.85);
 
@@ -77,6 +78,38 @@ html {
 		5 * var(--reveal-stagger) + var(--reveal-duration) +
 			var(--reveal-phase-gap)
 	);
+}
+
+/* Service cards: glow top-right on hover (::after — pseudo del mismo elemento que `.group`;
+   `group-hover:after` en Tailwind suele no aplicar bien aquí). */
+.service-card {
+	isolation: isolate;
+}
+
+.service-card::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.52s ease-out;
+	background: radial-gradient(
+		ellipse 175% 140% at 96% -18%,
+		rgb(207 143 110 / 0.14) 0%,
+		rgb(207 143 110 / 0.035) 42%,
+		transparent 72%
+	);
+}
+
+.service-card:hover::after {
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.service-card::after {
+		transition: none;
+	}
 }
 
 @keyframes reveal-fade-up {

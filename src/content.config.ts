@@ -12,4 +12,16 @@ const owner = defineCollection({
 	}),
 });
 
-export const collections = { owner };
+const services = defineCollection({
+	loader: glob({ pattern: "**/*.md", base: "./src/content/services" }),
+	schema: z.object({
+		title: z.string(),
+		order: z.coerce.number().optional(),
+		icon: z.string().optional(),
+		description: z.string(),
+		features: z.array(z.string()).min(1),
+		order_label: z.string().optional(),
+	}),
+});
+
+export const collections = { owner, services };

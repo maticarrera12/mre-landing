@@ -133,7 +133,7 @@ const owners = (await getCollection("owner")).sort((a, b) =>
 				<span class="font-light italic text-accent-elegant">de cada resultado.</span>
 			</h2>
 
-            <section id="equipo" class="bg-surface-deep px-8 py-16">
+            <section class="bg-surface-deep px-8 py-16">
                 <div class="mx-auto grid max-w-6xl gap-16 md:grid-cols-3">
                     {owners.map((entry) => <Owner owner={entry} />)}
                 </div>

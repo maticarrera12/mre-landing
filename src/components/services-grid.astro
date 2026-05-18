@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import ServiceCard from "./service-card.astro";
+import { ArrowRight } from "@lucide/astro";
+const services = (await getCollection("services")).sort((a, b) => {
+	const oa = a.data.order ?? 999;
+	const ob = b.data.order ?? 999;
+	if (oa !== ob) return oa - ob;
+	return a.data.title.localeCompare(b.data.title, "es");
+});
+
+---
+
+<section
+	id="servicios-detalle"
+	class="bg-surface-deep px-8 py-16 md:px-10 md:py-24 lg:px-14"
+	aria-labelledby="servicios-cards-heading"
+>
+	<div class="mx-auto flex max-w-6xl flex-col gap-10">
+		<h2
+			id="servicios-cards-heading"
+			class="sr-only"
+		>
+			Servicios del estudio
+		</h2>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-2">
+			{services.map((entry) => <ServiceCard service={entry} />)}
+		</div>
+
+		<div class="flex justify-center">
+			<a
+				href="/servicios"
+				class="group inline-flex items-center gap-2 rounded-sm text-white/65 transition-colors duration-200 hover:text-white focus-visible:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-elegant/45 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-deep"
+			>
+				Conoce todos nuestros servicios
+				<ArrowRight
+					class="h-4 w-4 shrink-0 text-accent-elegant transition-transform duration-200 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+					aria-hidden="true"
+				/>
+			</a>
+		</div>
+		
+	</div>
+</section>
