@@ -1,0 +1,141 @@
+---
+import { getCollection } from "astro:content";
+import Owner from "../components/owner.astro";
+const owners = (await getCollection("owner")).sort((a, b) =>
+	a.data.name.localeCompare(b.data.name, "es"),
+);
+---
+
+<section
+	class="bg-surface-deep px-8 py-16 md:px-10 md:py-24 lg:px-14"
+	aria-labelledby="nosotros-heading"
+>
+	<div class="mx-auto flex max-w-7xl flex-col items-center">
+		<div class="mb-12 flex flex-col items-center gap-5 md:mb-16">
+			<h3 class="text-center text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-accent-elegant/85">
+				Quiénes somos
+			</h3>
+		</div>
+
+		<div
+			class="flex w-full max-w-6xl flex-col gap-10 md:flex-row md:items-stretch md:gap-0"
+		>
+			<article
+				class="flex min-h-0 flex-1 flex-col justify-center text-center text-[0.85rem] leading-relaxed text-white/65 md:px-6 md:text-left"
+			>
+				<p>
+					Somos un estudio contable con{" "}
+					<span class="font-semibold text-white/88"
+						>más de 3 décadas de trayectoria,</span
+					>{" "}
+					especializado en brindar{" "}
+					<span class="font-semibold text-white/88">soluciones integrales</span> en
+					consultoría contable, impositiva, administrativa y de gestión.
+				</p>
+			</article>
+
+			<div class="nosotros-row-divider md:hidden" aria-hidden="true"></div>
+			<div
+				class="nosotros-column-divider hidden shrink-0 md:block"
+				aria-hidden="true"
+			>
+			</div>
+
+			<article
+				class="flex min-h-0 flex-1 flex-col justify-center text-center text-[0.85rem] leading-relaxed text-white/65 md:px-6 md:text-left"
+			>
+				<p>
+					Nuestra experiencia con una{" "}
+					<span class="font-semibold text-white/88"
+						>amplia diversidad de empresas</span
+					>{" "}
+					nos permite generar{" "}
+					<span class="font-semibold text-white/88">sinergias de negocio</span> que
+					potencian los resultados de cada cliente.
+				</p>
+			</article>
+
+			<div class="nosotros-row-divider md:hidden" aria-hidden="true"></div>
+			<div
+				class="nosotros-column-divider hidden shrink-0 md:block"
+				aria-hidden="true"
+			>
+			</div>
+
+			<article
+				class="flex min-h-0 flex-1 flex-col justify-center text-center text-[0.85rem] leading-relaxed text-white/65 md:px-6 md:text-left"
+			>
+				<p>
+					Contamos con un{" "}
+					<span class="font-semibold text-white/88">equipo multidisciplinario</span>{" "}
+					que combina compromiso, sólida formación académica y amplia experiencia
+					profesional.{" "}
+					<span class="font-semibold text-white/88">Nos apasiona lo que hacemos</span>{" "}
+					y nuestra misión es ofrecer un{" "}
+					<span class="font-semibold text-white/88"
+						>asesoramiento cercano y personalizado</span
+					>, acompañando a cada cliente en cada etapa de su crecimiento.
+				</p>
+			</article>
+		</div>
+
+		<div
+			class="flex w-full max-w-6xl flex-col gap-8 py-32 md:flex-row md:items-center md:gap-10"
+		>
+			<div
+				class="flex min-h-0 w-full min-w-0 flex-1 flex-col items-center justify-center gap-5"
+			>
+				<img
+					src="/assets/no-son-solo-numeros.jpg"
+					alt="No son solo números"
+					class="aspect-4/3 w-full max-w-xl object-cover md:max-w-none"
+				/>
+				<h3
+					class="text-center text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-accent-elegant/85"
+				>
+					"No son solo números" – Felipe Gimenez
+				</h3>
+			</div>
+			<div
+				class="flex min-h-0 w-full min-w-0 flex-1 flex-col justify-center gap-4"
+			>
+				<h3
+					class="w-full text-center text-[1.5rem] font-semibold uppercase tracking-[0.16em] text-accent-elegant/85"
+				>
+					No todo son números
+				</h3>
+				<p
+					class="text-center text-[0.85rem] leading-relaxed text-white/65 md:text-left"
+				>
+					Creemos que detrás de cada número hay una historia, una decisión, una
+					oportunidad. Nuestro enfoque va más allá de los datos: entendemos que
+					cada empresa tiene su propia identidad, sus desafíos únicos y sus
+					aspiraciones particulares.
+				</p>
+				<p
+					class="text-center text-[0.85rem] leading-relaxed text-white/65 md:text-left"
+				>
+					Por eso, además de los servicios contables y económicos, nos convertimos
+					en socios estratégicos que acompañan el crecimiento de cada cliente con
+					una visión integral y humana del negocio.
+				</p>
+			</div>
+		</div>
+
+        <div>
+			<h2
+				id="nosotros-heading"
+				class="text-center font-cormorant text-[clamp(2.2rem,4vw,3.5rem)] font-normal leading-tight tracking-tight text-white"
+			>
+				El motor humano detrás <br />
+				<span class="font-light italic text-accent-elegant">de cada resultado.</span>
+			</h2>
+
+            <section class="bg-surface-deep px-8 py-16">
+                <div class="mx-auto grid max-w-6xl gap-16 md:grid-cols-3">
+                    {owners.map((entry) => <Owner owner={entry} />)}
+                </div>
+            </section>
+        </div>
+	</div>
+</section>
