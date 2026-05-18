@@ -1,0 +1,222 @@
+---
+import { getCollection } from "astro:content";
+import { ChevronLeft, ChevronRight } from "@lucide/astro";
+import TestimonialSlide from "./testimonial-slide.astro";
+
+const testimonials = (await getCollection("clients")).sort((a, b) => {
+	const oa = a.data.order ?? 999;
+	const ob = b.data.order ?? 999;
+	if (oa !== ob) return oa - ob;
+	return a.data.name.localeCompare(b.data.name, "es");
+});
+---
+
+<div data-testimonials-slider class="relative flex w-full flex-col">
+	<div class="relative isolate min-h-0 w-full">
+		<div
+			data-slider-track
+			class="no-scrollbar flex w-full gap-7 overflow-x-auto pb-2 md:gap-8"
+			tabindex="0"
+		>
+			{testimonials.map((entry) => <TestimonialSlide entry={entry} />)}
+			<div class="contents" aria-hidden="true">
+				{testimonials.map((entry) => <TestimonialSlide entry={entry} />)}
+			</div>
+		</div>
+		<div
+			class="pointer-events-none absolute inset-y-0 left-0 z-10 w-14 bg-[linear-gradient(to_right,rgb(13_13_13)_0%,rgb(13_13_13_/_0.55)_42%,transparent_100%)] md:w-24 lg:w-28"
+			aria-hidden="true"
+		>
+		</div>
+		<div
+			class="pointer-events-none absolute inset-y-0 right-0 z-10 w-14 bg-[linear-gradient(to_left,rgb(13_13_13)_0%,rgb(13_13_13_/_0.55)_42%,transparent_100%)] md:w-24 lg:w-28"
+			aria-hidden="true"
+		>
+		</div>
+	</div>
+
+	<div
+		class="mt-8 flex items-center justify-center gap-16 border-t border-white/[0.06] pt-8 md:gap-24"
+	>
+		<button
+			type="button"
+			data-slider-prev
+			class="touch-manipulation border-0 bg-transparent p-2 text-white/38 transition-colors duration-300 hover:text-accent-elegant focus-visible:rounded-sm focus-visible:text-accent-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-elegant/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d] active:text-accent-elegant md:p-3"
+			aria-label="Anterior testimonio"
+		>
+			<ChevronLeft
+				stroke-width={1.35}
+				class="size-8 md:size-9"
+				aria-hidden="true"
+			/>
+		</button>
+		<button
+			type="button"
+			data-slider-next
+			class="touch-manipulation border-0 bg-transparent p-2 text-white/38 transition-colors duration-300 hover:text-accent-elegant focus-visible:rounded-sm focus-visible:text-accent-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-elegant/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d] active:text-accent-elegant md:p-3"
+			aria-label="Siguiente testimonio"
+		>
+			<ChevronRight
+				stroke-width={1.35}
+				class="size-8 md:size-9"
+				aria-hidden="true"
+			/>
+		</button>
+	</div>
+</div>
+
+<script>
+	const sliderCleanups = new WeakMap();
+
+	/** Velocidad horizontal (px/s) */
+	const SPEED_PX_PER_SEC = 42;
+
+	function initTestimonialsSliders() {
+		document.querySelectorAll("[data-testimonials-slider]").forEach((root) => {
+			const slider = root.querySelector("[data-slider-track]");
+			const prevBtn = root.querySelector("[data-slider-prev]");
+			const nextBtn = root.querySelector("[data-slider-next]");
+			if (!(slider instanceof HTMLElement)) return;
+			if (!(prevBtn instanceof HTMLElement)) return;
+			if (!(nextBtn instanceof HTMLElement)) return;
+
+			sliderCleanups.get(root)?.();
+
+			const reduceMotion = window.matchMedia(
+				"(prefers-reduced-motion: reduce)",
+			).matches;
+
+			let rafId = 0;
+			let lastTs = 0;
+			let paused = false;
+
+			const track = slider;
+
+			const cancelRaf = () => {
+				cancelAnimationFrame(rafId);
+				rafId = 0;
+				lastTs = 0;
+			};
+
+			const getScrollAmount = () => {
+				const card = track.querySelector("[data-testimonial-card]");
+				if (card instanceof HTMLElement) {
+					const gap =
+						parseFloat(getComputedStyle(track).gap || "0") || 24;
+					return card.getBoundingClientRect().width + gap;
+				}
+				return track.clientWidth * 0.85;
+			};
+
+			const loopWidth = () => track.scrollWidth / 2;
+
+			const scrollPrev = () => {
+				const step = getScrollAmount();
+				const lw = loopWidth();
+				if (lw > 16 && track.scrollLeft <= 8) {
+					track.scrollLeft += lw;
+				}
+				track.scrollLeft = Math.max(0, track.scrollLeft - step);
+			};
+
+			const scrollNext = () => {
+				const step = getScrollAmount();
+				const lw = loopWidth();
+				const max = Math.max(0, track.scrollWidth - track.clientWidth);
+				const tol = 8;
+				if (lw > 16 && track.scrollLeft >= max - tol) {
+					track.scrollLeft -= lw;
+				}
+				track.scrollLeft += step;
+			};
+
+			function tick(ts: number) {
+				const lw = loopWidth();
+				if (
+					!reduceMotion &&
+					lw > 40 &&
+					!paused &&
+					track.scrollWidth > track.clientWidth + 8
+				) {
+					if (lastTs === 0) lastTs = ts;
+					else {
+						const dt = Math.min((ts - lastTs) / 1000, 0.072);
+						lastTs = ts;
+						track.scrollLeft += SPEED_PX_PER_SEC * dt;
+						if (track.scrollLeft >= lw - 2) {
+							track.scrollLeft -= lw;
+						}
+					}
+				}
+				if (!paused && !reduceMotion) {
+					rafId = requestAnimationFrame(tick);
+				}
+			}
+
+			const ac = new AbortController();
+			const { signal } = ac;
+
+			nextBtn.addEventListener("click", scrollNext, { signal });
+			prevBtn.addEventListener("click", scrollPrev, { signal });
+
+			const pause = () => {
+				paused = true;
+				lastTs = 0;
+				cancelRaf();
+			};
+			const resume = () => {
+				paused = false;
+				lastTs = 0;
+				if (!reduceMotion) {
+					rafId = requestAnimationFrame(tick);
+				}
+			};
+
+			if (!reduceMotion) {
+				root.addEventListener("mouseenter", pause, { signal });
+				root.addEventListener("mouseleave", resume, { signal });
+				root.addEventListener("focusin", pause, { signal });
+				root.addEventListener(
+					"focusout",
+					(e) => {
+						if (!(e instanceof FocusEvent)) return;
+						const next = e.relatedTarget;
+						if (next instanceof Node && root.contains(next)) return;
+						resume();
+					},
+					{ signal },
+				);
+				root.addEventListener("touchstart", pause, {
+					passive: true,
+					signal,
+				});
+				root.addEventListener("touchend", resume, {
+					passive: true,
+					signal,
+				});
+
+				rafId = requestAnimationFrame(tick);
+			}
+
+			const dispose = () => {
+				paused = true;
+				cancelRaf();
+				ac.abort();
+			};
+			sliderCleanups.set(root, dispose);
+		});
+	}
+
+	initTestimonialsSliders();
+	document.addEventListener("astro:page-load", initTestimonialsSliders);
+</script>
+
+<style>
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+</style>

@@ -24,4 +24,16 @@ const services = defineCollection({
 	}),
 });
 
-export const collections = { owner, services };
+const clients = defineCollection({
+	loader: glob({ pattern: "**/*.md", base: "./src/content/clients" }),
+	schema: z.object({
+		name: z.string(),
+		image: z.string(),
+		message: z.string(),
+		order: z.coerce.number().optional(),
+		/** Texto bajo el nombre (ej. rubro); si falta se muestra un default */
+		subtitle: z.string().optional(),
+	}),
+});
+
+export const collections = { owner, services, clients };

@@ -1,6 +1,6 @@
 ---
 name: Claudio Rucker Embden
-image: /assets/claudio-portrait.jpg
+image: /assets/owner/claudio-portrait.jpg
 rol: Licenciado en Administración (UBA)
 ---
 

@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Star } from "@lucide/astro";
+
+export interface Props {
+	entry: CollectionEntry<"clients">;
+}
+
+const { entry } = Astro.props;
+---
+
+<div
+	data-testimonial-card
+	class="group relative w-[min(100%,19rem)] shrink-0 overflow-hidden rounded border border-white/10 bg-[#121212] p-8 shadow-2xl transition-colors duration-500 hover:border-accent-elegant/35 sm:w-[23rem] md:w-[26rem] lg:w-[28rem]"
+>
+	<div
+		class="pointer-events-none absolute inset-0 bg-[url('/assets/bg-marble-dark.png')] bg-cover opacity-[0.15] mix-blend-overlay transition-transform duration-700 group-hover:scale-[1.02]"
+		aria-hidden="true"
+	/>
+
+	<div class="relative z-10 space-y-5">
+		<div class="flex h-12 w-44 items-center justify-start md:h-14 md:w-52">
+			<img
+				src={entry.data.image}
+				alt={`Logo de ${entry.data.name}`}
+				class="h-full max-h-14 w-auto max-w-full object-contain opacity-[0.72] brightness-[1.08] contrast-[1.03] grayscale-[0.25] transition-[opacity,filter] duration-500 group-hover:opacity-100 group-hover:grayscale-0"
+				loading="eager"
+				decoding="async"
+				fetchpriority="low"
+			/>
+		</div>
+
+		<div class="flex gap-1 text-accent-elegant">
+			{
+				Array.from({ length: 5 }).map(() => (
+					<Star class="size-3.5 fill-accent-elegant stroke-accent-elegant" aria-hidden="true" />
+				))
+			}
+		</div>
+
+		<p class="text-[13px] leading-relaxed font-light italic text-white/60">
+			«{entry.data.message}»
+		</p>
+
+		<div class="border-t border-white/10 pt-4">
+			<h4 class="text-[11px] font-medium uppercase tracking-[0.15em] text-accent-elegant">
+				{entry.data.name}
+			</h4>
+			<span class="mt-0.5 block text-[10px] text-white/35">
+				{entry.data.subtitle ?? "Cliente corporativo"}
+			</span>
+		</div>
+	</div>
+</div>

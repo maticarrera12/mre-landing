@@ -1,6 +1,6 @@
 ---
 name: Mabel Morrone
-image: /assets/mabel-portrait.jpg
+image: /assets/owner/mabel-portrait.jpg
 rol: Contadora Pública y Licenciada en Administración (UBA)
 ---
 
