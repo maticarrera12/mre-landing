@@ -7,6 +7,7 @@ const owners = (await getCollection("owner")).sort((a, b) =>
 ---
 
 <section
+	id="nosotros"
 	class="bg-surface-deep px-8 py-16 md:px-10 md:py-24 lg:px-14"
 	aria-labelledby="nosotros-heading"
 >
@@ -80,6 +81,7 @@ const owners = (await getCollection("owner")).sort((a, b) =>
 		</div>
 
 		<div
+			id="clientes"
 			class="flex w-full max-w-6xl flex-col gap-8 py-32 md:flex-row md:items-center md:gap-10"
 		>
 			<div
@@ -88,7 +90,7 @@ const owners = (await getCollection("owner")).sort((a, b) =>
 				<img
 					src="/assets/no-son-solo-numeros.jpg"
 					alt="No son solo números"
-					class="aspect-4/3 w-full max-w-xl object-cover md:max-w-none"
+					class="aspect-[4/3] w-full max-w-xl object-cover md:max-w-none"
 				/>
 				<h3
 					class="text-center text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-accent-elegant/85"
@@ -131,7 +133,7 @@ const owners = (await getCollection("owner")).sort((a, b) =>
 				<span class="font-light italic text-accent-elegant">de cada resultado.</span>
 			</h2>
 
-            <section class="bg-surface-deep px-8 py-16">
+            <section id="equipo" class="bg-surface-deep px-8 py-16">
                 <div class="mx-auto grid max-w-6xl gap-16 md:grid-cols-3">
                     {owners.map((entry) => <Owner owner={entry} />)}
                 </div>

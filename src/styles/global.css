@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* Anclas: scroll suave y espacio para el header fijo */
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: 5.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
 /* Local variable fonts — files live in `public/typography` (URLs are site root paths). */
 
 @font-face {
